@@ -1,0 +1,3 @@
+.flexContainer {
+  composes: spaceBetween from '../../next-react-website-main/blog/styles/utils.module.css';
+}
