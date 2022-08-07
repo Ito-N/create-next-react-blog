@@ -4,7 +4,11 @@ import Layout from "../components/layout";
 export default function Home() {
   return (
     <>
-        <Hero />
+        <Hero
+            title="CUBE"
+            subtitle="アウトプットしていくサイト"
+            imageOn
+        />
     </>
   )
 }
