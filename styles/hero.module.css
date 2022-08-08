@@ -1,5 +1,5 @@
 .flexContainer {
-  composes: sideBySideCenter from '../../next-react-website-main/blog/styles/utils.module.css';
+  composes: sideBySideCenter from 'styles/util.module.css';
 }
 
 .text {

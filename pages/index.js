@@ -1,14 +1,10 @@
 import Hero from "components/hero";
-import Layout from "../components/layout";
+import Container from "components/container";
 
 export default function Home() {
   return (
-    <>
-        <Hero
-            title="CUBE"
-            subtitle="アウトプットしていくサイト"
-            imageOn
-        />
-    </>
-  )
+    <Container>
+      <Hero title="CUBE" subtitle="アウトプットしていくサイト" imageOn />
+    </Container>
+  );
 }
