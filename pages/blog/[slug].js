@@ -1,19 +1,21 @@
 import { getAllSlugs, getPostBySlug } from "lib/api";
-import Container from "../../components/container";
-import PostHeader from "../../components/post-header";
+import Container from "components/container";
+import PostHeader from "components/post-header";
 import Image from "next/image";
 import {
   TwoColumn,
   TwoColumnMain,
   TwoColumnSidebar,
-} from "../../components/two-column";
-import PostBody from "../../components/post-body";
-import ConvertBody from "../../components/convert-body";
-import PostCategories from "../../components/post-categories";
-import { extractText } from "../../lib/extract-text";
-import Meta from "../../components/meta";
+} from "components/two-column";
+import PostBody from "components/post-body";
+import ConvertBody from "components/convert-body";
+import PostCategories from "components/post-categories";
+import { extractText } from "lib/extract-text";
+import Meta from "components/meta";
 import { eyecatchLocal } from "lib/constants";
 import { getPlaiceholder } from "plaiceholder";
+import { prevNextPost } from "../../lib/prev-next-post";
+import Pagination from "../../components/pagination";
 
 export default function Post({
   title,
@@ -22,6 +24,8 @@ export default function Post({
   eyecatch,
   categories,
   description,
+  prevPost,
+  nextPost,
 }) {
   return (
     <Container>
@@ -32,31 +36,39 @@ export default function Post({
         pageImgW={eyecatch.width}
         pageImgH={eyecatch.height}
       />
-      <PostHeader title={title} subtitle="Blog Article" publish={publish} />
-      <figure>
-        <Image
-          src={eyecatch.url}
-          alt=""
-          layout="responsive"
-          width={eyecatch.width}
-          height={eyecatch.height}
-          sizes="(min-width: 1152px) 1152px, 100vw"
-          priority
-          placeholder="blur"
-          blurDataURL={eyecatch.blurDataURL}
-        />
-      </figure>
+      <article>
+        <PostHeader title={title} subtitle="Blog Article" publish={publish} />
+        <figure>
+          <Image
+            src={eyecatch.url}
+            alt=""
+            layout="responsive"
+            width={eyecatch.width}
+            height={eyecatch.height}
+            sizes="(min-width: 1152px) 1152px, 100vw"
+            priority
+            placeholder="blur"
+            blurDataURL={eyecatch.blurDataURL}
+          />
+        </figure>
 
-      <TwoColumn>
-        <TwoColumnMain>
-          <PostBody>
-            <ConvertBody contentHTML={content} />
-          </PostBody>
-        </TwoColumnMain>
-        <TwoColumnSidebar>
-          <PostCategories categories={categories} />
-        </TwoColumnSidebar>
-      </TwoColumn>
+        <TwoColumn>
+          <TwoColumnMain>
+            <PostBody>
+              <ConvertBody contentHTML={content} />
+            </PostBody>
+          </TwoColumnMain>
+          <TwoColumnSidebar>
+            <PostCategories categories={categories} />
+          </TwoColumnSidebar>
+        </TwoColumn>
+        <Pagination
+          prevText={prevPost.title}
+          prevUrl={prevPost.slug}
+          nextText={nextPost.title}
+          nextUrl={nextPost.slug}
+        />
+      </article>
     </Container>
   );
 }
@@ -80,6 +92,9 @@ export async function getStaticProps(context) {
   const { base64 } = await getPlaiceholder(eyecatch.url);
   eyecatch.blurDataURL = base64;
 
+  const allSlugs = await getAllSlugs();
+  const [prevPost, nextPost] = prevNextPost(allSlugs, slug);
+
   return {
     props: {
       title: post.title,
@@ -88,6 +103,8 @@ export async function getStaticProps(context) {
       eyecatch,
       categories: post.categories,
       description,
+      prevPost,
+      nextPost,
     },
   };
 }
